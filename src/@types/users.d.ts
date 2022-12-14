@@ -3,10 +3,10 @@ export type SignUpBodyType = {
   email: string;
   password: string;
   number: string;
-  nickname?: string;
+  sortation: number;
 };
 
 export type LoginBodyType = {
-  id: string;
+  email: string;
   password: string;
 };
