@@ -1,5 +1,14 @@
-import { NoticeRegisterBodyType } from './../@types/notice.d';
-import { getNoticeListSql, insertNoticeSql } from './../sql/notice';
+import {
+  NoticeRegisterBodyType,
+  EditNoticeBodyType,
+} from './../@types/notice.d';
+import {
+  getNoticeListSql,
+  insertNoticeSql,
+  detailNoticeSql,
+  editNoticeSql,
+  deleteNoticeSql,
+} from './../sql/notice';
 import { Injectable } from '@nestjs/common';
 import { _dbQuery } from 'src/common/mysql';
 
@@ -7,6 +16,10 @@ import { _dbQuery } from 'src/common/mysql';
 export class NoticeService {
   getNoticeList(param) {
     return _dbQuery(getNoticeListSql);
+  }
+
+  detailNotice(body: { num: number }) {
+    return _dbQuery(detailNoticeSql(body.num));
   }
 
   async postNotice(body: NoticeRegisterBodyType) {
@@ -17,5 +30,15 @@ export class NoticeService {
       console.log(`error ${error}`);
       return { status: 403 };
     }
+  }
+  async editNotice(body: EditNoticeBodyType) {
+    const { num, title, content } = body;
+    await _dbQuery(editNoticeSql, [title, content, num]);
+    return { status: 200 };
+  }
+
+  async deleteNotice(body: { num: number }) {
+    await _dbQuery(deleteNoticeSql(body.num));
+    return { status: 200 };
   }
 }

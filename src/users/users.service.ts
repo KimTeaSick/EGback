@@ -1,6 +1,10 @@
 import { getSalt } from './../common/salt';
-import { SignUpBodyType, LoginBodyType } from './../@types/users.d';
-import { singupSql, loginSql } from './../sql/users';
+import {
+  SignUpBodyType,
+  LoginBodyType,
+  UserSearchBodyType,
+} from './../@types/users.d';
+import { singupSql, loginSql, userSearchSql } from './../sql/users';
 import { _dbQuery } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
 import { makeSalt } from 'src/common/salt';
@@ -14,7 +18,6 @@ export class UsersService {
       const salt = makeSalt();
       const word = password + salt;
       const encPassword = CryptoJs.SHA256(word).toString();
-      console.log(encPassword);
       await _dbQuery(singupSql, [
         name,
         email,
@@ -35,17 +38,17 @@ export class UsersService {
       const { email, password } = body;
       const { SALT } = await getSalt(email);
       const word = password + SALT;
-      console.log(SALT);
-
       const encPassword = CryptoJs.SHA256(word).toString();
-      console.log(encPassword);
-
       const userInfo = await _dbQuery(loginSql(email, encPassword));
-      console.log(userInfo);
       return userInfo;
     } catch (error) {
       console.log(`error ${error}`);
       return { status: 403 };
     }
+  }
+
+  userSearch(body: UserSearchBodyType) {
+    const { searchData, sortation } = body;
+    return _dbQuery(userSearchSql(searchData, sortation));
   }
 }

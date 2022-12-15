@@ -1,4 +1,8 @@
-import { SignUpBodyType, LoginBodyType } from './../@types/users.d';
+import {
+  SignUpBodyType,
+  LoginBodyType,
+  UserSearchBodyType,
+} from './../@types/users.d';
 import { UsersService } from './users.service';
 import { Body, Controller, Post } from '@nestjs/common';
 
@@ -14,5 +18,10 @@ export class UsersContoroller {
   @Post('login')
   login(@Body() body: LoginBodyType) {
     return this.usersservice.login(body);
+  }
+
+  @Post('userSearch')
+  userSearch(@Body() body: UserSearchBodyType) {
+    return this.usersservice.userSearch(body);
   }
 }

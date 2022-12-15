@@ -3,3 +3,9 @@ export type NoticeRegisterBodyType = {
   content: string;
   userIdx: number;
 };
+
+export type EditNoticeBodyType = {
+  num: number;
+  title: string;
+  content: string;
+};

@@ -10,3 +10,8 @@ export type LoginBodyType = {
   email: string;
   password: string;
 };
+
+export type UserSearchBodyType = {
+  sortation: string;
+  searchData: string;
+};
