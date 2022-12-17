@@ -14,7 +14,7 @@ import { _dbQuery } from 'src/common/mysql';
 
 @Injectable()
 export class NoticeService {
-  getNoticeList(param) {
+  getNoticeList() {
     return _dbQuery(getNoticeListSql);
   }
 

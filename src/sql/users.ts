@@ -15,3 +15,7 @@ export const userSearchSql = (searchData: string, sortation: string) =>
       : `${sortation} like "%${searchData}%"`
   } 
   `;
+
+export const emailCheckSql = (email: string) => {
+  return `SELECT count(email) as emailCount FROM USER WHERE EMAIL like "${email}"`;
+};

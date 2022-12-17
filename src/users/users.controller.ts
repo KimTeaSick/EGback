@@ -19,7 +19,10 @@ export class UsersContoroller {
   login(@Body() body: LoginBodyType) {
     return this.usersservice.login(body);
   }
-
+  @Post('emailCheck')
+  emailCheck(@Body() body: { email: string }) {
+    return this.usersservice.emailCheck(body);
+  }
   @Post('userSearch')
   userSearch(@Body() body: UserSearchBodyType) {
     return this.usersservice.userSearch(body);

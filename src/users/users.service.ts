@@ -4,7 +4,12 @@ import {
   LoginBodyType,
   UserSearchBodyType,
 } from './../@types/users.d';
-import { singupSql, loginSql, userSearchSql } from './../sql/users';
+import {
+  singupSql,
+  loginSql,
+  userSearchSql,
+  emailCheckSql,
+} from './../sql/users';
 import { _dbQuery } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
 import { makeSalt } from 'src/common/salt';
@@ -50,5 +55,12 @@ export class UsersService {
   userSearch(body: UserSearchBodyType) {
     const { searchData, sortation } = body;
     return _dbQuery(userSearchSql(searchData, sortation));
+  }
+  async emailCheck(body: { email: string }) {
+    const { email } = body;
+    let use = false;
+    const emailResult = await _dbQuery(emailCheckSql(email));
+    if (emailResult.length !== 0) use = true;
+    return use;
   }
 }
