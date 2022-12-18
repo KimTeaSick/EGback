@@ -10,7 +10,7 @@ import {
   userSearchSql,
   emailCheckSql,
 } from './../sql/users';
-import { _dbQuery } from 'src/common/mysql';
+import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
 import { makeSalt } from 'src/common/salt';
 import CryptoJs from 'crypto-js';
@@ -57,10 +57,12 @@ export class UsersService {
     return _dbQuery(userSearchSql(searchData, sortation));
   }
   async emailCheck(body: { email: string }) {
+    console.log(body);
     const { email } = body;
     let use = false;
-    const emailResult = await _dbQuery(emailCheckSql(email));
-    if (emailResult.length !== 0) use = true;
+    const result = await _dbQueryOne(emailCheckSql(email));
+    console.log('emailResult', result.emailCount);
+    if (result.emailCount !== 0) use = true;
     return use;
   }
 }
