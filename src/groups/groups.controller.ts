@@ -1,4 +1,8 @@
-import { MakeGroupBodyType } from './../@types/groups.d';
+import {
+  MakeGroupBodyType,
+  EditGroupBodyType,
+  DeleteGroupBodyType,
+} from './../@types/groups.d';
 import { GroupsService } from './groups.service';
 import { Controller, Post, Body } from '@nestjs/common';
 
@@ -9,5 +13,15 @@ export class GroupsController {
   @Post('makeGroup')
   makegroup(@Body() body: MakeGroupBodyType) {
     return this.groupsservice.makeGroup(body);
+  }
+
+  @Post('editGroup')
+  editgroup(@Body() body: EditGroupBodyType) {
+    return this.groupsservice.editGroup(body);
+  }
+
+  @Post('deleteGroup')
+  deletegroup(@Body() body: DeleteGroupBodyType) {
+    return this.groupsservice.deleteGroup(body);
   }
 }
