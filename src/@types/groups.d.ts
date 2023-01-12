@@ -1,6 +1,7 @@
 export type MakeGroupBodyType = {
   teacherIdx: number;
   groupName: string;
+  comment: string;
   studentIdxs: number[];
 };
 

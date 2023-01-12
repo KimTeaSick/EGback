@@ -4,11 +4,20 @@ import {
   DeleteGroupBodyType,
 } from './../@types/groups.d';
 import { GroupsService } from './groups.service';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common';
+import { ValidationPipe } from 'src/pipes/stringToInt.pipe';
 
 @Controller('group')
 export class GroupsController {
   constructor(private readonly groupsservice: GroupsService) {}
+
+  @Get('groupList/:idx')
+  getGroupList(
+    @Param('idx', ValidationPipe) idx: number,
+    @Query('sortation', ValidationPipe) sortation: number,
+  ) {
+    return this.groupsservice.getGroupList(idx, sortation);
+  }
 
   @Post('makeGroup')
   makegroup(@Body() body: MakeGroupBodyType) {
