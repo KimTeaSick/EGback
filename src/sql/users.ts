@@ -19,3 +19,9 @@ export const userSearchSql = (searchData: string, sortation: string) =>
 export const emailCheckSql = (email: string) => {
   return `SELECT count(email) as emailCount FROM USER WHERE EMAIL like "${email}"`;
 };
+
+export const userListSql = (body: unknown) => {
+  return `SELECT USER_IDX, NAME, SORTATION, NUMBER, EMAIL, ADMISSION FROM USER ORDER BY USER_IDX DESC`;
+};
+
+export const userAdmissionSql = `UPDATE USER SET ADMISSION = ? WHERE USER_IDX = ?`;

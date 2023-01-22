@@ -5,10 +5,12 @@ import {
   UserSearchBodyType,
 } from './../@types/users.d';
 import {
-  singupSql,
   loginSql,
+  singupSql,
+  userListSql,
   userSearchSql,
   emailCheckSql,
+  userAdmissionSql,
 } from './../sql/users';
 import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
@@ -64,5 +66,14 @@ export class UsersService {
     console.log('emailResult', result.emailCount);
     if (result.emailCount !== 0) use = true;
     return use;
+  }
+
+  userList(body: unknown) {
+    return _dbQuery(userListSql(body));
+  }
+
+  async userAdmission(body: { admission: number; idx: number }) {
+    await _dbQuery(userAdmissionSql, [body.admission, body.idx]);
+    return { status: 200 };
   }
 }

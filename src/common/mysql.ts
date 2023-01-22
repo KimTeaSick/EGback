@@ -1,11 +1,11 @@
 import mysql from 'mysql2';
 
 const _dbConn = mysql.createPool({
-  host: 'localhost',
+  host: 'database-1.cjm1jhtpnrvb.ap-northeast-1.rds.amazonaws.com',
   user: 'root',
   database: 'EGDB',
   port: 3306,
-  password: '8556',
+  password: 'wlztmd856',
 });
 
 function _dbQuery(sqlString: string, values?: any): any {

@@ -1,4 +1,7 @@
-export const getNoticeListSql = `SELECT * FROM NOTICE ORDER BY REG_DATE DESC`;
+export const getNoticeListSql = `
+SELECT u.NAME, n.TITLE, n.CONTENT, n.REG_DATE, n.NOTICE_IDX
+FROM NOTICE n LEFT JOIN USER u ON n.WRITER_IDX = u.USER_IDX 
+ORDER BY REG_DATE DESC`;
 
 export const insertNoticeSql = `INSERT INTO NOTICE (TITLE, CONTENT, WRITER_IDX)VALUES (?,?,?)`;
 
