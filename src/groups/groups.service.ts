@@ -1,8 +1,10 @@
 import {
+  getIdxSql,
   makeGroupSql,
   editGroupSql,
-  groupMappingSql,
   deleteGroupSql,
+  groupMappingSql,
+  groupPeopleCount,
   myGroupNumberListSqlForTeacher,
   myGroupNumberListSqlForStudent,
   myGroupListSqlForStudent,
@@ -13,7 +15,7 @@ import {
   DeleteGroupBodyType,
 } from './../@types/groups.d';
 import { Injectable } from '@nestjs/common';
-import { _dbQuery } from 'src/common/mysql';
+import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 
 @Injectable()
 export class GroupsService {
@@ -56,5 +58,16 @@ export class GroupsService {
     const { groupIdx } = body;
     await _dbQuery(deleteGroupSql(groupIdx));
     return { status: 200 };
+  }
+
+  async groupPeopleCount() {
+    const idx = await _dbQuery(getIdxSql);
+    const listData = await Promise.all(
+      idx.map((group_idx: { GROUP_IDX: number }) => {
+        const data = _dbQueryOne(groupPeopleCount(group_idx.GROUP_IDX));
+        return data;
+      }),
+    );
+    return listData;
   }
 }

@@ -33,4 +33,9 @@ export class GroupsController {
   deletegroup(@Body() body: DeleteGroupBodyType) {
     return this.groupsservice.deleteGroup(body);
   }
+
+  @Post('groupInfoList')
+  groupPeopleCount() {
+    return this.groupsservice.groupPeopleCount();
+  }
 }

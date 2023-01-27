@@ -13,4 +13,17 @@ export const myGroupNumberListSqlForStudent = (idx: number) =>
 export const myGroupListSqlForStudent = (idx: number) =>
   `select * from EG_GROUP where group_idx = ${idx}`;
 
+export const groupPeopleCount = (idx: number) =>
+  `select 
+  eg.GROUP_IDX, 
+  eg.name, 
+  eg.COMMENT, 
+  count(gm.STUDENT_IDX) as student_count,
+  u.NAME as teacher_name 
+  from EG_GROUP eg left join GROUP_MAPPING gm on gm.GROUP_IDX = eg.GROUP_IDX 
+  left join USER u on u.USER_IDX = eg.TEACHER_IDX 
+  where eg.GROUP_IDX = ${idx}`;
+
+export const getIdxSql = `select GROUP_IDX from EG_GROUP `;
+
 export const groupDetailInfo = () => {};
