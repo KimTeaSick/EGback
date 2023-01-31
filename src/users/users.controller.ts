@@ -1,6 +1,7 @@
 import {
-  SignUpBodyType,
+  EditBody,
   LoginBodyType,
+  SignUpBodyType,
   UserSearchBodyType,
 } from './../@types/users.d';
 import { UsersService } from './users.service';
@@ -31,11 +32,22 @@ export class UsersContoroller {
     return this.usersservice.userSearch(body);
   }
   @Post('userList')
-  userList(@Body() body: unknown) {
-    return this.usersservice.userList(body);
+  userList() {
+    return this.usersservice.userList();
   }
   @Post('userAdmission')
-  userAdmission(@Body() body: { admission: number; idx: number }) {
+  userAdmission(
+    @Body() body: { admission: number; idx: number; group_idx: number },
+  ) {
     return this.usersservice.userAdmission(body);
+  }
+  @Post('userNoticeLog')
+  userNoticeLog(@Body() body: { user_idx: number }) {
+    return this.usersservice.userNoticeLog(body.user_idx);
+  }
+
+  @Post('editUser')
+  editUser(@Body() body: EditBody) {
+    return this.usersservice.editUser(body);
   }
 }

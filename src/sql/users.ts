@@ -20,8 +20,27 @@ export const emailCheckSql = (email: string) => {
   return `SELECT count(email) as emailCount FROM USER WHERE EMAIL like "${email}"`;
 };
 
-export const userListSql = (body: unknown) => {
-  return `SELECT USER_IDX, NAME, SORTATION, NUMBER, EMAIL, ADMISSION FROM USER ORDER BY USER_IDX DESC`;
+export const userIdxSql = `select USER_IDX from USER`;
+
+export const userListSql = (idx: number) => {
+  return `
+  SELECT u.USER_IDX, u.NAME, u.SORTATION, u.NUMBER, u.EMAIL, u.ADMISSION, u.IN_GROUP,GROUP_CONCAT(eg.NAME) as group_name
+  FROM USER u LEFT JOIN GROUP_MAPPING gm ON gm.STUDENT_IDX = u.USER_IDX 
+  LEFT JOIN EG_GROUP eg ON eg.GROUP_IDX = gm.GROUP_IDX 
+  WHERE u.USER_IDX = ${idx} ORDER BY USER_IDX DESC`;
 };
 
 export const userAdmissionSql = `UPDATE USER SET ADMISSION = ? WHERE USER_IDX = ?`;
+
+export const userNoticeLogSql = (
+  idx: number,
+) => `select n.NOTICE_IDX, n.TITLE, n.CONTENT, n.REG_DATE 
+from NOTICE n left join NOTICE_LOG nl on nl.NOTICE_IDX = n.NOTICE_IDX 
+left join USER u on nl.TARGET_IDX = u.USER_IDX 
+where u.USER_IDX = ${idx}`;
+
+export const editNameSql = `UPDATE USER SET NAME = ?  WHERE USER_IDX = ?`;
+export const editNumberSql = `UPDATE USER SET NUMBER = ?  WHERE USER_IDX = ?`;
+export const groupMoveSql = `UPDATE GROUP_MAPPING SET GROUP_IDX = ?  WHERE STUDENT_IDX = ?`;
+
+export const registUserSql = `INSERT INTO GROUP_MAPPING (GROUP_IDX, STUDENT_IDX) VALUES (?, ?)`;

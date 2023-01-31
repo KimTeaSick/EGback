@@ -38,4 +38,9 @@ export class GroupsController {
   groupPeopleCount() {
     return this.groupsservice.groupPeopleCount();
   }
+
+  @Post('groupDetailInfo')
+  groupDetailInfo(@Body() body: { idx: number }) {
+    return this.groupsservice.groupDetailInfo(body.idx);
+  }
 }

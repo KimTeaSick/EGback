@@ -1,5 +1,6 @@
 import { getSalt } from './../common/salt';
 import {
+  EditBody,
   SignUpBodyType,
   LoginBodyType,
   UserSearchBodyType,
@@ -7,10 +8,16 @@ import {
 import {
   loginSql,
   singupSql,
+  userIdxSql,
   userListSql,
+  editNameSql,
+  groupMoveSql,
+  registUserSql,
   userSearchSql,
   emailCheckSql,
+  editNumberSql,
   userAdmissionSql,
+  userNoticeLogSql,
 } from './../sql/users';
 import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
@@ -68,12 +75,39 @@ export class UsersService {
     return use;
   }
 
-  userList(body: unknown) {
-    return _dbQuery(userListSql(body));
+  async userList() {
+    const idx = await _dbQuery(userIdxSql);
+    console.log(idx);
+
+    const list = Promise.all(
+      idx.map((item: { USER_IDX: number }) => {
+        return _dbQueryOne(userListSql(item.USER_IDX));
+      }),
+    );
+    console.log(list);
+
+    return list;
   }
 
-  async userAdmission(body: { admission: number; idx: number }) {
+  async userAdmission(body: {
+    admission: number;
+    idx: number;
+    group_idx: number;
+  }) {
     await _dbQuery(userAdmissionSql, [body.admission, body.idx]);
+    await _dbQuery(registUserSql, [body.group_idx, body.idx]);
+
+    return { status: 200 };
+  }
+
+  userNoticeLog(idx: number) {
+    return _dbQuery(userNoticeLogSql(idx));
+  }
+
+  async editUser(body: EditBody) {
+    await _dbQuery(editNameSql, [body.name, body.user_idx]);
+    await _dbQuery(editNumberSql, [body.number, body.user_idx]);
+    await _dbQuery(groupMoveSql, [body.group_idx, body.user_idx]);
     return { status: 200 };
   }
 }

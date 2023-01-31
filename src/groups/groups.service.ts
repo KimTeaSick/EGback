@@ -4,6 +4,7 @@ import {
   editGroupSql,
   deleteGroupSql,
   groupMappingSql,
+  groupDetailInfo,
   groupPeopleCount,
   myGroupNumberListSqlForTeacher,
   myGroupNumberListSqlForStudent,
@@ -69,5 +70,9 @@ export class GroupsService {
       }),
     );
     return listData;
+  }
+
+  groupDetailInfo(idx: number) {
+    return _dbQuery(groupDetailInfo(idx));
   }
 }

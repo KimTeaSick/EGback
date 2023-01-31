@@ -15,3 +15,10 @@ export type UserSearchBodyType = {
   sortation: string;
   searchData: string;
 };
+
+export type EditBody = {
+  user_idx?: number;
+  number?: string;
+  group_idx?: number;
+  name?: string;
+};

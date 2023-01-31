@@ -26,4 +26,8 @@ export const groupPeopleCount = (idx: number) =>
 
 export const getIdxSql = `select GROUP_IDX from EG_GROUP `;
 
-export const groupDetailInfo = () => {};
+export const groupDetailInfo = (
+  idx: number,
+) => `select u.USER_IDX, u.NAME, u.EMAIL, u.NUMBER
+  from GROUP_MAPPING gm left join USER u on gm.STUDENT_IDX  = u.USER_IDX 
+  where gm.GROUP_IDX = ${idx}`;
