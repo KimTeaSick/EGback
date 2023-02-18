@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import {
   EditBody,
   LoginBodyType,
@@ -7,6 +8,7 @@ import {
 import { UsersService } from './users.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { _dbConn } from 'src/common/mysql';
+import { NextFunction, Response } from 'express';
 
 @Controller('users')
 export class UsersContoroller {
@@ -14,8 +16,7 @@ export class UsersContoroller {
 
   @Post('signup')
   signup(@Body() body: SignUpBodyType) {
-    console.log(process.env.HOST);
-    console.log(_dbConn);
+    console.log(12);
     return this.usersservice.signup(body);
   }
 

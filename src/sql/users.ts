@@ -24,7 +24,7 @@ export const userIdxSql = `select USER_IDX from USER`;
 
 export const userListSql = (idx: number) => {
   return `
-  SELECT u.USER_IDX, u.NAME, u.SORTATION, u.NUMBER, u.EMAIL, u.ADMISSION, u.IN_GROUP,GROUP_CONCAT(eg.NAME) as group_name
+  SELECT u.USER_IDX, u.NAME, u.SORTATION, u.NUMBER, u.EMAIL, u.ADMISSION, u.IN_GROUP,GROUP_CONCAT(eg.NAME) as group_name, create_at
   FROM USER u LEFT JOIN GROUP_MAPPING gm ON gm.STUDENT_IDX = u.USER_IDX 
   LEFT JOIN EG_GROUP eg ON eg.GROUP_IDX = gm.GROUP_IDX 
   WHERE u.USER_IDX = ${idx} ORDER BY USER_IDX DESC`;

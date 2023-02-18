@@ -23,6 +23,7 @@ import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
 import { makeSalt } from 'src/common/salt';
 import CryptoJs from 'crypto-js';
+import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -54,7 +55,31 @@ export class UsersService {
       const word = password + SALT;
       const encPassword = CryptoJs.SHA256(word).toString();
       const userInfo = await _dbQuery(loginSql(email, encPassword));
-      return userInfo;
+      if (userInfo !== undefined) {
+        const token = jwt.sign(
+          {
+            type: 'JWT',
+            userInfo: userInfo,
+          },
+          process.env.SECRET_KEY,
+          {
+            expiresIn: '15m', // 만료시간 15분
+            issuer: '토큰발급자',
+          },
+        );
+        console.log(process.env.SECRET_KEY);
+        console.log(token);
+        return {
+          status: 200,
+          message: '토큰이 발급되었습니다.',
+          token: token,
+        };
+      } else {
+        return {
+          status: 204,
+          message: '아이디 혹은 비밀번호가 틀렸습니다.',
+        };
+      }
     } catch (error) {
       console.log(`error ${error}`);
       return { status: 403 };
