@@ -43,4 +43,9 @@ export class GroupsController {
   groupDetailInfo(@Body() body: { idx: number }) {
     return this.groupsservice.groupDetailInfo(body.idx);
   }
+
+  @Post('groupMemberPush')
+  groupMemberPush(@Body() body: { groupIdx: number; studentIdxs: number[] }) {
+    return this.groupsservice.groupMemberPush(body);
+  }
 }

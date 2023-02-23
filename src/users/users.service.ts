@@ -12,12 +12,14 @@ import {
   userListSql,
   editNameSql,
   groupMoveSql,
+  admissionSql,
   registUserSql,
   userSearchSql,
   emailCheckSql,
   editNumberSql,
   userAdmissionSql,
   userNoticeLogSql,
+  getGroup,
 } from './../sql/users';
 import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
@@ -28,8 +30,9 @@ import jwt from 'jsonwebtoken';
 @Injectable()
 export class UsersService {
   async signup(body: SignUpBodyType) {
+    console.log(21312);
     try {
-      const { name, email, number, password, sortation } = body;
+      const { name, email, number, password, sortation, pushToken } = body;
       const salt = makeSalt();
       const word = password + salt;
       const encPassword = CryptoJs.SHA256(word).toString();
@@ -40,6 +43,7 @@ export class UsersService {
         encPassword,
         salt,
         sortation,
+        pushToken,
       ]);
       return { status: 200 };
     } catch (error) {
@@ -54,25 +58,30 @@ export class UsersService {
       const { SALT } = await getSalt(email);
       const word = password + SALT;
       const encPassword = CryptoJs.SHA256(word).toString();
-      const userInfo = await _dbQuery(loginSql(email, encPassword));
+      let userInfo = await _dbQuery(loginSql(email, encPassword));
+
       if (userInfo !== undefined) {
-        const token = jwt.sign(
-          {
-            type: 'JWT',
-            userInfo: userInfo,
-          },
-          process.env.SECRET_KEY,
-          {
-            expiresIn: '15m', // 만료시간 15분
-            issuer: '토큰발급자',
-          },
-        );
-        console.log(process.env.SECRET_KEY);
-        console.log(token);
+        const groupIdx = await _dbQueryOne(getGroup(userInfo[0].USER_IDX));
+        // const token = jwt.sign(
+        //   {
+        //     type: 'JWT',
+        //     userInfo: userInfo,
+        //   },
+        //   process.env.SECRET_KEY,
+        //   {
+        //     expiresIn: '2 days', // 만료시간 15분
+        //     issuer: '토큰발급자',
+        //   },
+        // );
+        userInfo = userInfo[0];
+        userInfo.GROUP_IDX = groupIdx.GROUP_IDX;
+        console.log(userInfo);
+
         return {
           status: 200,
+          userInfo: userInfo,
           message: '토큰이 발급되었습니다.',
-          token: token,
+          // token: token,
         };
       } else {
         return {
@@ -121,8 +130,9 @@ export class UsersService {
   }) {
     await _dbQuery(userAdmissionSql, [body.admission, body.idx]);
     await _dbQuery(registUserSql, [body.group_idx, body.idx]);
+    const userInfo = await _dbQueryOne(admissionSql(body.idx));
 
-    return { status: 200 };
+    return { status: 200, userInfo };
   }
 
   userNoticeLog(idx: number) {

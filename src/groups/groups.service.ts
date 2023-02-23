@@ -41,10 +41,10 @@ export class GroupsService {
       teacherIdx,
       comment,
     ]);
-    studentIdxs.map(
-      async (studentIdx: number) =>
-        await _dbQuery(groupMappingSql, [groupIdx.insertId, studentIdx]),
-    );
+    // studentIdxs.map(
+    //   async (studentIdx: number) =>
+    //     await _dbQuery(groupMappingSql, [groupIdx.insertId, studentIdx]),
+    // );
     return { status: 200 };
   }
 
@@ -74,5 +74,17 @@ export class GroupsService {
 
   groupDetailInfo(idx: number) {
     return _dbQuery(groupDetailInfo(idx));
+  }
+
+  groupMemberPush(body: { groupIdx: number; studentIdxs: number[] }) {
+    const { groupIdx, studentIdxs } = body;
+    studentIdxs.map(
+      async (studentIdx: number) =>
+        await _dbQuery(groupMappingSql, [groupIdx, studentIdx]),
+    );
+
+    return {
+      status: 200,
+    };
   }
 }

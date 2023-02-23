@@ -4,6 +4,7 @@ export type SignUpBodyType = {
   password: string;
   number: string;
   sortation: number;
+  pushToken: string;
 };
 
 export type LoginBodyType = {

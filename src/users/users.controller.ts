@@ -16,7 +16,6 @@ export class UsersContoroller {
 
   @Post('signup')
   signup(@Body() body: SignUpBodyType) {
-    console.log(12);
     return this.usersservice.signup(body);
   }
 
