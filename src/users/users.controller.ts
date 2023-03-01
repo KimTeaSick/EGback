@@ -50,4 +50,9 @@ export class UsersContoroller {
   editUser(@Body() body: EditBody) {
     return this.usersservice.editUser(body);
   }
+
+  @Post('rejectMember')
+  rejectMember(@Body() body: { user_idx: number }) {
+    return this.usersservice.rejectMember(body.user_idx);
+  }
 }

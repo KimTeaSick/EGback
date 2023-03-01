@@ -48,4 +48,9 @@ export class GroupsController {
   groupMemberPush(@Body() body: { groupIdx: number; studentIdxs: number[] }) {
     return this.groupsservice.groupMemberPush(body);
   }
+
+  @Post('getGroupTokens')
+  getGroupTokens(@Body() body: any) {
+    return this.groupsservice.getPushToken(body.idxs);
+  }
 }

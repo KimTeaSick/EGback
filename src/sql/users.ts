@@ -51,3 +51,6 @@ export const registUserSql = `INSERT INTO GROUP_MAPPING (GROUP_IDX, STUDENT_IDX)
 
 export const admissionSql = (idx: number) =>
   `SELECT * FROM USER WHERE USER_IDX = "${idx}"`;
+
+export const rejectMemberSql = (user_idx: number) =>
+  `delete from USER WHERE USER_IDX = ${user_idx}`;

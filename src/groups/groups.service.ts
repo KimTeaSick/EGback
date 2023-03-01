@@ -1,5 +1,6 @@
 import {
   getIdxSql,
+  getPushTokensSql,
   makeGroupSql,
   editGroupSql,
   deleteGroupSql,
@@ -63,13 +64,20 @@ export class GroupsService {
 
   async groupPeopleCount() {
     const idx = await _dbQuery(getIdxSql);
-    const listData = await Promise.all(
-      idx.map((group_idx: { GROUP_IDX: number }) => {
+    const listData: any = await Promise.all(
+      idx.map(async (group_idx: { GROUP_IDX: number }) => {
         const data = _dbQueryOne(groupPeopleCount(group_idx.GROUP_IDX));
         return data;
       }),
     );
     return listData;
+  }
+
+  async getPushToken(idxs: number) {
+    const data = await _dbQueryOne(getPushTokensSql(idxs));
+    console.log(data);
+
+    return data;
   }
 
   groupDetailInfo(idx: number) {

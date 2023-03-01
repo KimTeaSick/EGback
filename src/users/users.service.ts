@@ -20,6 +20,7 @@ import {
   userAdmissionSql,
   userNoticeLogSql,
   getGroup,
+  rejectMemberSql,
 } from './../sql/users';
 import { _dbQuery, _dbQueryOne } from 'src/common/mysql';
 import { Injectable } from '@nestjs/common';
@@ -33,7 +34,17 @@ export class UsersService {
     console.log(21312);
     try {
       const { name, email, number, password, sortation, pushToken } = body;
+      console.log(
+        'name, email, number, password',
+        name,
+        email,
+        number,
+        password,
+      );
+
       const salt = makeSalt();
+      console.log('salt', salt);
+
       const word = password + salt;
       const encPassword = CryptoJs.SHA256(word).toString();
       await _dbQuery(singupSql, [
@@ -56,32 +67,33 @@ export class UsersService {
     try {
       const { email, password } = body;
       const { SALT } = await getSalt(email);
+      console.log('SALT', SALT);
       const word = password + SALT;
+      console.log('word', password + SALT);
       const encPassword = CryptoJs.SHA256(word).toString();
-      let userInfo = await _dbQuery(loginSql(email, encPassword));
-
+      console.log('email, encPassword', email, encPassword);
+      const userInfo = await _dbQueryOne(loginSql(email, encPassword));
+      console.log(userInfo);
       if (userInfo !== undefined) {
-        const groupIdx = await _dbQueryOne(getGroup(userInfo[0].USER_IDX));
-        // const token = jwt.sign(
-        //   {
-        //     type: 'JWT',
-        //     userInfo: userInfo,
-        //   },
-        //   process.env.SECRET_KEY,
-        //   {
-        //     expiresIn: '2 days', // 만료시간 15분
-        //     issuer: '토큰발급자',
-        //   },
-        // );
-        userInfo = userInfo[0];
-        userInfo.GROUP_IDX = groupIdx.GROUP_IDX;
-        console.log(userInfo);
+        // const groupIdx = await _dbQueryOne(getGroup(userInfo[0].USER_IDX));
+        const token = jwt.sign(
+          {
+            type: 'JWT',
+            userInfo: userInfo,
+          },
+          process.env.SECRET_KEY,
+          {
+            expiresIn: '2 days', // 만료시간 15분
+            issuer: '토큰발급자',
+          },
+        );
+        // userInfo.GROUP_IDX = groupIdx.GROUP_IDX;
 
         return {
           status: 200,
           userInfo: userInfo,
           message: '토큰이 발급되었습니다.',
-          // token: token,
+          token: token,
         };
       } else {
         return {
@@ -144,5 +156,13 @@ export class UsersService {
     await _dbQuery(editNumberSql, [body.number, body.user_idx]);
     await _dbQuery(groupMoveSql, [body.group_idx, body.user_idx]);
     return { status: 200 };
+  }
+
+  async rejectMember(user_idx: number) {
+    await _dbQueryOne(rejectMemberSql(user_idx));
+    return {
+      status: 200,
+      message: '회원이 거절되었습니다.',
+    };
   }
 }
